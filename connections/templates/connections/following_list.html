@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Following - Sigma Social{% endblock %}
+
+{% block content %}
+<div class="narrow-card">
+    <h1>Following</h1>
+
+    <div class="card" style="padding: var(--space-2) var(--space-4);">
+        {% for follow in page_obj %}
+            <div class="connection-row">
+                <a href="{% url 'profile' username=follow.following.username %}">
+                    {% if follow.following.profile.profile_picture %}
+                        <img class="avatar avatar-sm" src="{{ follow.following.profile.profile_picture.url }}" alt="{{ follow.following.username }}">
+                    {% else %}
+                        <div class="avatar avatar-sm"></div>
+                    {% endif %}
+                </a>
+                <a class="connection-username" href="{% url 'profile' username=follow.following.username %}">@{{ follow.following.username }}</a>
+
+                <form method="post" action="{% url 'unfollow_user' username=follow.following.username %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary btn-sm">Following</button>
+                </form>
+            </div>
+        {% empty %}
+            <p class="empty-feed">Not following anyone yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&larr; Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next &rarr;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

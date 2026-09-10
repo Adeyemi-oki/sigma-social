@@ -1,0 +1,36 @@
+# Render Blueprint for Sigma Social.
+#
+# Intentionally defines ONLY the web service -- no `databases:` section.
+# The production database is Supabase PostgreSQL, connected via the
+# DATABASE_URL environment variable below, not a Render-managed Postgres
+# instance. All secret values use `sync: false`, which tells Render to
+# prompt for them in the dashboard instead of storing them in this file
+# (and therefore never in Git).
+services:
+  - type: web
+    name: sigma-social
+    runtime: python
+    plan: free
+    branch: main
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi:application
+    healthCheckPath: /health/
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.12.3"

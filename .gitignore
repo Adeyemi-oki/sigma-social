@@ -1,0 +1,41 @@
+# --- Environment & secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+
+# --- Virtual environments ---
+venv/
+.venv/
+env/
+ENV/
+
+# --- Django ---
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/media/
+*.log
+local_settings.py
+
+# --- Django-generated logs directory (kept empty via .gitkeep) ---
+/logs/*
+!/logs/.gitkeep
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Testing / coverage ---
+.coverage
+htmlcov/
+.pytest_cache/

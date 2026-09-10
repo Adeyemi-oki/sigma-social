@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Create a Post - Sigma Social{% endblock %}
+
+{% block content %}
+<div class="narrow-card">
+    <div class="card">
+        <h1>Create a Post</h1>
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                    {% if field.label %}<label for="{{ field.id_for_label }}">{{ field.label }}</label>{% endif %}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </p>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <div style="display:flex; gap:12px;">
+                <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary" style="flex:1;">Post</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

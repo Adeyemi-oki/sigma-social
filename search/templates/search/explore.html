@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Explore - Sigma Social{% endblock %}
+
+{% block content %}
+<h1>Explore</h1>
+
+{% if suggested_users %}
+    <h2>People You May Know</h2>
+    <div class="card" style="padding: var(--space-2) var(--space-4); margin-bottom: var(--space-5);">
+        {% for candidate in suggested_users %}
+            {% include "search/_user_result.html" %}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card empty-feed" style="margin-bottom: var(--space-5);">You're following everyone!</div>
+{% endif %}
+
+<h2>Recent Posts</h2>
+<div class="feed">
+    {% for post in page_obj %}
+        {% include "posts/_post_card.html" %}
+    {% empty %}
+        <div class="card empty-feed">Nothing to explore yet.</div>
+    {% endfor %}
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&larr; Previous</a>
+        {% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next &rarr;</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

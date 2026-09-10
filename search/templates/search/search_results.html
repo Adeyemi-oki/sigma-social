@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{% if query %}Search results for "{{ query }}"{% else %}Search{% endif %} - Sigma Social{% endblock %}
+
+{% block content %}
+<form method="get" action="{% url 'search' %}" class="search-form" style="margin-bottom: var(--space-5);">
+    <label for="search-page-input" class="sr-only">Search users or posts</label>
+    <input type="text" id="search-page-input" name="q" value="{{ query }}" placeholder="Search users or posts..." maxlength="100">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if not query %}
+    <div class="card empty-feed">
+        <h2 style="margin-bottom:4px;">Search Sigma Social</h2>
+        Find people and posts.
+    </div>
+{% else %}
+    <p class="search-summary">Search results for &ldquo;{{ query }}&rdquo;</p>
+
+    <h2>Users</h2>
+    <div class="card" style="padding: var(--space-2) var(--space-4); margin-bottom: var(--space-5);">
+        {% for candidate in user_page_obj %}
+            {% include "search/_user_result.html" %}
+        {% empty %}
+            <p class="empty-feed">No people found.<br>Try searching for a different name or username.</p>
+        {% endfor %}
+    </div>
+    {% if user_page_obj.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if user_page_obj.has_previous %}
+                <a href="?q={{ query|urlencode }}&upage={{ user_page_obj.previous_page_number }}">&larr; Previous</a>
+            {% endif %}
+            <span>Page {{ user_page_obj.number }} of {{ user_page_obj.paginator.num_pages }}</span>
+            {% if user_page_obj.has_next %}
+                <a href="?q={{ query|urlencode }}&upage={{ user_page_obj.next_page_number }}">Next &rarr;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <h2 style="margin-top:32px;">Posts</h2>
+    <div class="feed">
+        {% for post in post_page_obj %}
+            {% include "posts/_post_card.html" %}
+        {% empty %}
+            <div class="card empty-feed">No posts found.<br>Try another search.</div>
+        {% endfor %}
+    </div>
+    {% if post_page_obj.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if post_page_obj.has_previous %}
+                <a href="?q={{ query|urlencode }}&page={{ post_page_obj.previous_page_number }}">&larr; Previous</a>
+            {% endif %}
+            <span>Page {{ post_page_obj.number }} of {{ post_page_obj.paginator.num_pages }}</span>
+            {% if post_page_obj.has_next %}
+                <a href="?q={{ query|urlencode }}&page={{ post_page_obj.next_page_number }}">Next &rarr;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

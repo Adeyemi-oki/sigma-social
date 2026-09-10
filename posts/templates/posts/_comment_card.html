@@ -1,0 +1,24 @@
+{# Expects `comment` in context. #}
+<div class="comment-card">
+    <a href="{% url 'profile' username=comment.author.username %}">
+        {% if comment.author.profile.profile_picture %}
+            <img class="avatar avatar-xs" src="{{ comment.author.profile.profile_picture.url }}" alt="{{ comment.author.username }}">
+        {% else %}
+            <div class="avatar avatar-xs"></div>
+        {% endif %}
+    </a>
+    <div class="comment-body">
+        <a class="comment-author" href="{% url 'profile' username=comment.author.username %}">@{{ comment.author.username }}</a>
+        <p class="comment-text">{{ comment.content }}</p>
+        <div class="comment-timestamp">
+            {{ comment.created_at|timesince }} ago
+            {% if request.user == comment.author %}
+                &middot;
+                <form method="post" action="{% url 'delete_comment' pk=comment.pk %}" style="display:inline" onsubmit="return confirm('Delete this comment?');">
+                    {% csrf_token %}
+                    <button type="submit" class="linklike" style="color:var(--color-danger);">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>

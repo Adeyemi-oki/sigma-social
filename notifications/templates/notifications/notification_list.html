@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications - Sigma Social{% endblock %}
+
+{% block content %}
+<div class="narrow-card">
+    <div class="notification-header">
+        <h1 style="margin:0;">Notifications</h1>
+        {% if unread_notifications_count %}
+            <form method="post" action="{% url 'mark_all_notifications_read' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary btn-sm">Mark all as read</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="card" style="padding: var(--space-2);">
+        <div class="notification-list">
+            {% for notification in notifications %}
+                <div class="notification-item{% if not notification.is_read %} unread{% endif %}">
+                    <a href="{% url 'profile' username=notification.actor.username %}">
+                        {% if notification.actor.profile.profile_picture %}
+                            <img class="avatar avatar-sm" src="{{ notification.actor.profile.profile_picture.url }}" alt="{{ notification.actor.username }}">
+                        {% else %}
+                            <div class="avatar avatar-sm"></div>
+                        {% endif %}
+                    </a>
+                    <div style="flex:1;">
+                        <p class="notification-text">
+                            <a href="{% url 'profile' username=notification.actor.username %}">@{{ notification.actor.username }}</a>
+                            <form method="post" action="{% url 'mark_notification_read' pk=notification.pk %}" style="display:inline">
+                                {% csrf_token %}
+                                <button type="submit" class="linklike">{{ notification.get_action_text }}</button>
+                            </form>
+                        </p>
+                        <div class="post-timestamp">{{ notification.created_at|timesince }} ago</div>
+                    </div>
+                    {% if not notification.is_read %}
+                        <span aria-label="Unread" style="width:8px; height:8px; border-radius:50%; background:var(--color-primary); flex-shrink:0; margin-top:8px;"></span>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p class="empty-feed">No notifications yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

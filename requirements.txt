@@ -1,0 +1,29 @@
+# Core framework
+Django==6.1
+
+# PostgreSQL database driver (production)
+psycopg2-binary==2.9.12
+
+# Loads variables from a local .env file during development
+python-dotenv==1.2.2
+
+# Serves static files efficiently in production without a separate
+# web server (Nginx/CDN) being strictly required
+whitenoise==6.12.0
+
+# Parses a single DATABASE_URL connection string, as provided by
+# platforms like Render and Railway
+dj-database-url==3.1.2
+
+# Production-grade WSGI server used to run the app on Render/Railway
+gunicorn==26.2.0
+
+# Required by Django's ImageField (profile pictures)
+Pillow==12.1.1
+
+# Production media storage (profile pictures, post images) -- Render's
+# filesystem is ephemeral, so uploads are stored in Cloudinary instead.
+# Only used when CLOUDINARY_* environment variables are set; local
+# development without them falls back to local disk storage.
+django-cloudinary-storage==0.3.0
+cloudinary==1.46.2

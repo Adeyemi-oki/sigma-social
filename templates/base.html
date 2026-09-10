@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+{% load icons %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sigma Social{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           SIGMA SOCIAL DESIGN SYSTEM
+           Flame orange + black + white. Connect - Share - Grow.
+           ============================================================ */
+        :root {
+            --color-primary: #FF4A1F;
+            --color-primary-light: #FF8A30;
+            --color-primary-dark: #D93A14;
+            --color-black: #14100E;
+            --color-white: #FFFFFF;
+            --color-bg: #F7F6F4;
+            --color-surface: #FFFFFF;
+            --color-border: #E8E5E1;
+            --color-text: #1B1714;
+            --color-muted: #7A736C;
+            --color-danger: #D92D20;
+            --color-danger-bg: #FDEEEC;
+            --color-success-bg: #EAF6EE;
+            --color-success-text: #1E6B3C;
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-full: 999px;
+
+            --shadow-sm: 0 1px 2px rgba(20, 16, 14, 0.05), 0 1px 6px rgba(20, 16, 14, 0.04);
+            --shadow-md: 0 8px 24px rgba(20, 16, 14, 0.10);
+
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 12px;
+            --space-4: 16px;
+            --space-5: 24px;
+            --space-6: 32px;
+
+            --font: "Manrope", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --transition: 150ms ease;
+
+            --sidebar-w: 248px;
+            --rail-w: 300px;
+            --header-h: 56px;
+            --bottomnav-h: 60px;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            font-family: var(--font);
+            background: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font);
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 0 0 var(--space-3);
+            letter-spacing: -0.01em;
+        }
+        h1 { font-size: 1.5rem; }
+        h2 { font-size: 1.15rem; }
+        h3 { font-size: 1rem; }
+        p { margin: 0 0 var(--space-3); }
+
+        a { color: inherit; }
+
+        img { max-width: 100%; display: block; }
+
+        a:focus-visible, button:focus-visible, input:focus-visible,
+        textarea:focus-visible, [tabindex]:focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: var(--sidebar-w) minmax(0, 1fr) var(--rail-w);
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            align-items: start;
+        }
+        .app-shell.no-sidebar { grid-template-columns: minmax(0, 1fr); max-width: 480px; }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: var(--space-5) var(--space-4);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--color-border);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            text-decoration: none;
+            margin-bottom: var(--space-6);
+            padding: 0 var(--space-2);
+        }
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+            flex-shrink: 0;
+        }
+        .brand-name {
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--color-black);
+        }
+
+        .side-nav { display: flex; flex-direction: column; gap: var(--space-1); }
+        .side-nav a, .side-nav button.side-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-3);
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            color: var(--color-text);
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: none;
+            border: none;
+            font-family: var(--font);
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+        }
+        .side-nav a:hover, .side-nav button.side-link:hover { background: var(--color-bg); }
+        .side-nav a.active { color: var(--color-primary); background: #FFF3EE; }
+        .side-nav a.active .side-icon { color: var(--color-primary); }
+        .side-icon { font-size: 1.2rem; width: 24px; text-align: center; flex-shrink: 0; }
+        .badge {
+            background: var(--color-primary);
+            color: var(--color-white);
+            font-size: 0.7rem;
+            font-weight: 700;
+            border-radius: var(--radius-full);
+            padding: 1px 7px;
+            margin-left: auto;
+        }
+
+        .sidebar-search { margin-bottom: var(--space-5); }
+
+        .sidebar-footer { margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--color-border); }
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--color-text);
+        }
+        .sidebar-user:hover { background: var(--color-bg); }
+        .sidebar-username { font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .main-col { min-width: 0; padding: var(--space-5) var(--space-4); }
+
+        .right-rail { padding: var(--space-5) var(--space-4); position: sticky; top: 0; }
+        .rail-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+        .rail-tagline { font-weight: 700; color: var(--color-muted); font-size: 0.85rem; }
+
+        .mobile-header {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            height: var(--header-h);
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-4);
+            background: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .mobile-header .brand-name { font-size: 1.05rem; }
+        .mobile-header-icons { display: flex; align-items: center; gap: var(--space-3); }
+        .mobile-header-icons a { position: relative; text-decoration: none; color: var(--color-text); display: flex; }
+
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: var(--bottomnav-h);
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            z-index: 20;
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+        .bottom-nav-inner { display: flex; height: 100%; align-items: center; justify-content: space-around; }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--color-muted);
+            min-width: 44px;
+            min-height: 44px;
+            position: relative;
+        }
+        .bottom-nav a.active { color: var(--color-primary); }
+        .bottom-nav .badge-dot {
+            position: absolute;
+            top: 2px; right: 4px;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--color-primary);
+        }
+
+        .messages { list-style: none; padding: 0; margin: 0 0 var(--space-4); }
+        .messages li {
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            background: var(--color-success-bg);
+            color: var(--color-success-text);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .messages li.error { background: var(--color-danger-bg); color: var(--color-danger); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            font-family: var(--font);
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 10px 18px;
+            border-radius: var(--radius-full);
+            border: 1px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background var(--transition), border-color var(--transition), color var(--transition), opacity var(--transition);
+            min-height: 40px;
+            line-height: 1;
+        }
+        .btn-primary { background: var(--color-primary); color: var(--color-white); }
+        .btn-primary:hover { background: var(--color-primary-dark); }
+        .btn-secondary { background: var(--color-white); color: var(--color-text); border-color: var(--color-border); }
+        .btn-secondary:hover { background: var(--color-bg); }
+        .btn-outline { background: transparent; color: var(--color-primary); border-color: var(--color-primary); }
+        .btn-danger { background: var(--color-white); color: var(--color-danger); border-color: var(--color-danger-bg); }
+        .btn-danger:hover { background: var(--color-danger-bg); }
+        .btn-sm { padding: 6px 14px; font-size: 0.82rem; min-height: 32px; }
+        .btn-block { width: 100%; }
+        .btn:disabled { opacity: 0.6; cursor: default; }
+
+        button.linklike {
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        form p { margin-bottom: var(--space-4); }
+        label { display: block; margin-bottom: var(--space-2); font-weight: 600; font-size: 0.85rem; color: var(--color-text); }
+        input[type="text"], input[type="password"], input[type="email"], textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            background: var(--color-white);
+            font-family: var(--font);
+            font-size: 0.95rem;
+            color: var(--color-text);
+            transition: border-color var(--transition);
+        }
+        input:focus, textarea:focus {
+            border-color: var(--color-primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 74, 31, 0.14);
+        }
+        textarea { resize: vertical; font-family: var(--font); }
+        .errorlist { list-style: none; padding: 0; margin: var(--space-1) 0 0; color: var(--color-danger); font-size: 0.82rem; }
+        .helptext { font-size: 0.82rem; color: var(--color-muted); }
+        .links { margin-top: var(--space-4); text-align: center; font-size: 0.9rem; color: var(--color-muted); }
+        .links a { color: var(--color-primary); font-weight: 600; text-decoration: none; }
+
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+        }
+        .narrow-card { max-width: 400px; margin: 0 auto; }
+
+        .avatar { border-radius: 50%; object-fit: cover; background: var(--color-bg); flex-shrink: 0; display: block; }
+        .avatar-xs { width: 28px; height: 28px; }
+        .avatar-sm { width: 40px; height: 40px; }
+        .avatar-md { width: 52px; height: 52px; }
+        .avatar-lg { width: 96px; height: 96px; }
+        .avatar-xl { width: 128px; height: 128px; }
+
+        .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-5) var(--space-4); }
+        .auth-brand { text-align: center; margin-bottom: var(--space-5); }
+        .auth-brand .brand-name { font-size: 1.6rem; display: block; }
+        .auth-tagline { color: var(--color-muted); font-weight: 600; font-size: 0.9rem; margin-top: var(--space-1); }
+        .auth-card { width: 100%; max-width: 380px; }
+
+        .profile-header { text-align: center; }
+        .profile-username { font-weight: 800; font-size: 1.2rem; margin-top: var(--space-3); }
+        .profile-fullname { color: var(--color-muted); font-size: 0.9rem; }
+        .profile-bio { margin: var(--space-2) 0; }
+        .profile-joined { font-size: 0.8rem; color: var(--color-muted); margin-bottom: var(--space-4); }
+        .profile-stats { display: flex; justify-content: center; gap: var(--space-6); margin: var(--space-4) 0; }
+        .profile-stat { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--color-text); }
+        .profile-stat strong { font-size: 1.05rem; font-weight: 800; }
+        .profile-stat span { color: var(--color-muted); font-size: 0.8rem; }
+        .current-picture { text-align: center; margin-bottom: var(--space-3); }
+
+        .feed { display: flex; flex-direction: column; gap: var(--space-4); }
+        .post-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow-sm);
+        }
+        .post-header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+        .post-author { font-weight: 700; text-decoration: none; color: var(--color-text); font-size: 0.92rem; }
+        .post-timestamp { font-size: 0.78rem; color: var(--color-muted); }
+        .post-content { white-space: pre-wrap; margin: 0 0 var(--space-3); font-size: 0.95rem; }
+        .post-image { width: 100%; border-radius: var(--radius-md); margin-bottom: var(--space-3); }
+        .post-stats { display: flex; gap: var(--space-4); font-size: 0.82rem; color: var(--color-muted); margin-bottom: var(--space-2); }
+        .post-stats a { color: inherit; text-decoration: none; }
+        .post-stats a:hover { text-decoration: underline; }
+        .post-actions { display: flex; align-items: center; gap: var(--space-4); border-top: 1px solid var(--color-border); padding-top: var(--space-3); }
+        .post-actions a { text-decoration: none; color: var(--color-muted); font-weight: 600; font-size: 0.85rem; }
+        .like-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: var(--font);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--color-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .like-btn.liked { color: var(--color-primary); }
+        .create-post-link { margin-bottom: var(--space-4); }
+        .empty-feed { text-align: center; color: var(--color-muted); padding: var(--space-6) var(--space-4); line-height: 1.6; }
+
+        .comments-section { margin-top: var(--space-5); }
+        .comment-card { border-top: 1px solid var(--color-border); padding: var(--space-3) 0; display: flex; gap: var(--space-3); }
+        .comment-body { flex: 1; min-width: 0; }
+        .comment-author { font-weight: 700; text-decoration: none; color: var(--color-text); font-size: 0.88rem; }
+        .comment-text { margin: 2px 0 4px; white-space: pre-wrap; font-size: 0.9rem; }
+        .comment-timestamp { font-size: 0.75rem; color: var(--color-muted); }
+        .comment-form { margin-top: var(--space-4); display: flex; gap: var(--space-2); align-items: flex-start; }
+        .comment-form textarea { flex: 1; }
+        .liked-by-list { list-style: none; padding: 0; margin: 0; }
+        .liked-by-list li { padding: var(--space-2) 0; border-top: 1px solid var(--color-border); }
+        .liked-by-list li:first-child { border-top: none; }
+
+        .connection-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-top: 1px solid var(--color-border); }
+        .connection-row:first-child { border-top: none; }
+        .connection-username { flex: 1; min-width: 0; font-weight: 700; text-decoration: none; color: var(--color-text); font-size: 0.9rem; }
+        .connection-meta { color: var(--color-muted); font-size: 0.78rem; margin-top: 1px; }
+        .connection-row form { display: inline; flex-shrink: 0; }
+
+        .notification-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); gap: var(--space-3); }
+        .notification-list { display: flex; flex-direction: column; }
+        .notification-item { display: flex; gap: var(--space-3); align-items: flex-start; padding: var(--space-3); border-radius: var(--radius-md); }
+        .notification-item.unread { background: #FFF3EE; }
+        .notification-item a { color: var(--color-text); font-weight: 700; text-decoration: none; }
+        .notification-text { margin: 0; font-size: 0.9rem; }
+
+        .search-form { display: flex; gap: var(--space-2); }
+        .search-form input { flex: 1; }
+        .search-summary { color: var(--color-muted); font-size: 0.9rem; margin-bottom: var(--space-4); }
+
+        .pagination { display: flex; justify-content: center; align-items: center; gap: var(--space-4); margin-top: var(--space-5); font-size: 0.85rem; color: var(--color-muted); }
+        .pagination a { color: var(--color-primary); text-decoration: none; font-weight: 700; }
+
+        @media (max-width: 1080px) {
+            .app-shell { grid-template-columns: var(--sidebar-w) minmax(0, 1fr); }
+            .right-rail { display: none; }
+        }
+
+        @media (max-width: 860px) {
+            .app-shell { display: block; max-width: 100%; }
+            .sidebar { display: none; }
+            .right-rail { display: none; }
+            .mobile-header { display: flex; }
+            .bottom-nav { display: block; }
+            .main-col { padding: var(--space-4) var(--space-3) calc(var(--bottomnav-h) + var(--space-5)); max-width: 600px; margin: 0 auto; }
+            .narrow-card { max-width: 100%; }
+            h1 { font-size: 1.3rem; }
+        }
+
+        @media (max-width: 420px) {
+            .profile-stats { gap: var(--space-5); }
+            .post-actions { gap: var(--space-3); }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+{% if user.is_authenticated %}
+    <header class="mobile-header">
+        <a href="{% url 'home' %}" class="brand" style="margin:0;">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-name">Sigma Social</span>
+        </a>
+        <div class="mobile-header-icons">
+            <a href="{% url 'search' %}" aria-label="Search">{% icon "search" %}</a>
+            <a href="{% url 'notifications' %}" aria-label="Notifications{% if unread_notifications_count %}, {{ unread_notifications_count }} unread{% endif %}">
+                {% icon "bell" %}
+                {% if unread_notifications_count %}<span class="badge-dot" aria-hidden="true"></span>{% endif %}
+            </a>
+        </div>
+    </header>
+{% endif %}
+
+<div class="app-shell{% if not user.is_authenticated %} no-sidebar{% endif %}">
+
+    {% if user.is_authenticated %}
+    <aside class="sidebar">
+        <a href="{% url 'home' %}" class="brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-name">Sigma Social</span>
+        </a>
+
+        <form method="get" action="{% url 'search' %}" class="sidebar-search" role="search">
+            <label for="nav-search-input" class="sr-only">Search users or posts</label>
+            <input type="text" id="nav-search-input" name="q" placeholder="Search Sigma Social" maxlength="100">
+        </form>
+
+        <nav class="side-nav" aria-label="Main navigation">
+            <a href="{% url 'home' %}"{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}><span class="side-icon">{% icon "home" %}</span> Home</a>
+            <a href="{% url 'explore' %}"{% if request.resolver_match.url_name == 'explore' %} class="active"{% endif %}><span class="side-icon">{% icon "explore" %}</span> Explore</a>
+            <a href="{% url 'create_post' %}"{% if request.resolver_match.url_name == 'create_post' %} class="active"{% endif %}><span class="side-icon">{% icon "plus" %}</span> Create Post</a>
+            <a href="{% url 'notifications' %}"{% if request.resolver_match.url_name == 'notifications' %} class="active"{% endif %}>
+                <span class="side-icon">{% icon "bell" %}</span> Notifications
+                {% if unread_notifications_count %}<span class="badge">{{ unread_notifications_count }}</span>{% endif %}
+            </a>
+            <a href="{% url 'followers' %}"{% if request.resolver_match.url_name == 'followers' %} class="active"{% endif %}><span class="side-icon">{% icon "followers" %}</span> Followers</a>
+            <a href="{% url 'following' %}"{% if request.resolver_match.url_name == 'following' %} class="active"{% endif %}><span class="side-icon">{% icon "following" %}</span> Following</a>
+            <a href="{% url 'profile' username=user.username %}"{% if request.resolver_match.url_name == 'profile' and request.resolver_match.kwargs.username == user.username %} class="active"{% endif %}><span class="side-icon">{% icon "profile" %}</span> Profile</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="sidebar-user" href="{% url 'profile' username=user.username %}">
+                {% if user.profile.profile_picture %}
+                    <img class="avatar avatar-sm" src="{{ user.profile.profile_picture.url }}" alt="">
+                {% else %}
+                    <div class="avatar avatar-sm"></div>
+                {% endif %}
+                <span class="sidebar-username">@{{ user.username }}</span>
+            </a>
+            <form method="post" action="{% url 'logout' %}" style="margin-top: var(--space-2);">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary btn-sm btn-block">Log out</button>
+            </form>
+        </div>
+    </aside>
+    {% endif %}
+
+    <main class="main-col">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block right_rail %}
+        {% if user.is_authenticated %}
+        <aside class="right-rail">
+            <div class="rail-card">
+                <div class="rail-tagline">Connect &bull; Share &bull; Grow</div>
+            </div>
+        </aside>
+        {% endif %}
+    {% endblock %}
+</div>
+
+{% if user.is_authenticated %}
+    <nav class="bottom-nav" aria-label="Main navigation">
+        <div class="bottom-nav-inner">
+            <a href="{% url 'home' %}" aria-label="Home"{% if request.resolver_match.url_name == 'home' %} class="active"{% endif %}>{% icon "home" 24 %}</a>
+            <a href="{% url 'explore' %}" aria-label="Explore"{% if request.resolver_match.url_name == 'explore' %} class="active"{% endif %}>{% icon "explore" 24 %}</a>
+            <a href="{% url 'create_post' %}" aria-label="Create post"{% if request.resolver_match.url_name == 'create_post' %} class="active"{% endif %}>{% icon "plus" 24 %}</a>
+            <a href="{% url 'notifications' %}" aria-label="Notifications{% if unread_notifications_count %}, {{ unread_notifications_count }} unread{% endif %}"{% if request.resolver_match.url_name == 'notifications' %} class="active"{% endif %}>
+                {% icon "bell" 24 %}
+                {% if unread_notifications_count %}<span class="badge-dot" aria-hidden="true"></span>{% endif %}
+            </a>
+            <a href="{% url 'profile' username=user.username %}" aria-label="Profile"{% if request.resolver_match.url_name == 'profile' and request.resolver_match.kwargs.username == user.username %} class="active"{% endif %}>{% icon "profile" 24 %}</a>
+        </div>
+    </nav>
+{% endif %}
+
+</body>
+</html>

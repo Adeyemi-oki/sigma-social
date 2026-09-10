@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Post by @{{ post.author.username }} - Sigma Social{% endblock %}
+
+{% block content %}
+    <div class="narrow-card">
+        <article class="post-card">
+            <div class="post-header">
+                <a href="{% url 'profile' username=post.author.username %}">
+                    {% if post.author.profile.profile_picture %}
+                        <img class="avatar avatar-sm" src="{{ post.author.profile.profile_picture.url }}" alt="{{ post.author.username }}">
+                    {% else %}
+                        <div class="avatar avatar-sm"></div>
+                    {% endif %}
+                </a>
+                <div>
+                    <a class="post-author" href="{% url 'profile' username=post.author.username %}">@{{ post.author.username }}</a>
+                    <div class="post-timestamp">
+                        {{ post.created_at|date:"F j, Y, g:i a" }}
+                        {% if post.updated_at != post.created_at %}
+                            (edited {{ post.updated_at|timesince }} ago)
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if post.content %}
+                <p class="post-content">{{ post.content }}</p>
+            {% endif %}
+
+            {% if post.image %}
+                <img class="post-image" src="{{ post.image.url }}" alt="Post image">
+            {% endif %}
+
+            <div class="post-stats">
+                <a href="{% url 'post_likes' pk=post.pk %}">{{ post.like_count }} like{{ post.like_count|pluralize }}</a>
+                <span>{{ post.comment_count }} comment{{ post.comment_count|pluralize }}</span>
+            </div>
+
+            <div class="post-actions">
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'toggle_like' pk=post.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="like-btn{% if post.is_liked %} liked{% endif %}" aria-pressed="{% if post.is_liked %}true{% else %}false{% endif %}">
+                            {% if post.is_liked %}&hearts; Liked{% else %}&#9825; Like{% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+                {% if request.user == post.author %}
+                    <form method="post" action="{% url 'delete_post' pk=post.pk %}" onsubmit="return confirm('Delete this post?');" style="margin-left:auto;">
+                        {% csrf_token %}
+                        <button type="submit" class="linklike" style="color:var(--color-danger); font-weight:600; font-size:0.85rem;">Delete this post</button>
+                    </form>
+                {% endif %}
+            </div>
+        </article>
+
+        <div class="comments-section" id="comments">
+            <h2>Comments</h2>
+
+            {% for comment in comments_page %}
+                {% include "posts/_comment_card.html" %}
+            {% empty %}
+                <p class="empty-feed">No comments yet.</p>
+            {% endfor %}
+
+            {% if comments_page.paginator.num_pages > 1 %}
+                <div class="pagination">
+                    {% if comments_page.has_previous %}
+                        <a href="?page={{ comments_page.previous_page_number }}#comments">&larr; Previous</a>
+                    {% endif %}
+                    <span>Page {{ comments_page.number }} of {{ comments_page.paginator.num_pages }}</span>
+                    {% if comments_page.has_next %}
+                        <a href="?page={{ comments_page.next_page_number }}#comments">Next &rarr;</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if request.user.is_authenticated %}
+                <form class="comment-form" method="post" action="{% url 'add_comment' pk=post.pk %}">
+                    {% csrf_token %}
+                    <label for="{{ comment_form.content.id_for_label }}" class="sr-only">Write a comment</label>
+                    {{ comment_form.content }}
+                    <button type="submit" class="btn btn-primary btn-sm">Post</button>
+                </form>
+                {% if comment_form.content.errors %}
+                    <ul class="errorlist">
+                        {% for error in comment_form.content.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% else %}
+                <p class="helptext"><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+            {% endif %}
+        </div>
+
+        <p class="links">
+            <a href="{% url 'home' %}">&larr; Back to feed</a>
+        </p>
+    </div>
+{% endblock %}

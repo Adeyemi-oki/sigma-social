@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}@{{ profile_user.username }} - Sigma Social{% endblock %}
+
+{% block content %}
+    <div class="narrow-card">
+        <div class="card profile-header">
+            {% if profile.profile_picture %}
+                <img class="avatar avatar-xl" style="margin:0 auto;" src="{{ profile.profile_picture.url }}" alt="{{ profile_user.username }}'s profile picture">
+            {% else %}
+                <div class="avatar avatar-xl" style="margin:0 auto;"></div>
+            {% endif %}
+
+            <div class="profile-username">@{{ profile_user.username }}</div>
+            {% if profile_user.get_full_name %}
+                <div class="profile-fullname">{{ profile_user.get_full_name }}</div>
+            {% endif %}
+
+            {% if profile.bio %}
+                <p class="profile-bio">{{ profile.bio }}</p>
+            {% else %}
+                <p class="profile-bio helptext">No bio yet.</p>
+            {% endif %}
+
+            <p class="profile-joined">Joined {{ profile_user.date_joined|date:"F Y" }}</p>
+
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <strong>{{ posts.count }}</strong>
+                    <span>Posts</span>
+                </div>
+                {% if request.user == profile_user %}
+                    <a class="profile-stat" href="{% url 'followers' %}">
+                        <strong>{{ follower_count }}</strong>
+                        <span>Followers</span>
+                    </a>
+                    <a class="profile-stat" href="{% url 'following' %}">
+                        <strong>{{ following_count }}</strong>
+                        <span>Following</span>
+                    </a>
+                {% else %}
+                    <div class="profile-stat">
+                        <strong>{{ follower_count }}</strong>
+                        <span>Followers</span>
+                    </div>
+                    <div class="profile-stat">
+                        <strong>{{ following_count }}</strong>
+                        <span>Following</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if request.user == profile_user %}
+                <a class="btn btn-secondary" href="{% url 'edit_profile' %}">Edit Profile</a>
+            {% elif request.user.is_authenticated %}
+                {% if is_following %}
+                    <form method="post" action="{% url 'unfollow_user' username=profile_user.username %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary">Following</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'follow_user' username=profile_user.username %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Follow</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <h2 style="text-align:center; margin-top:32px;">Posts</h2>
+
+    <div class="feed">
+        {% for post in posts %}
+            {% include "posts/_post_card.html" %}
+        {% empty %}
+            <div class="card empty-feed">No posts yet.</div>
+        {% endfor %}
+    </div>
+{% endblock %}

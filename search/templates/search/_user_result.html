@@ -1,0 +1,35 @@
+{# Expects `candidate` (a User) and `following_ids` (a set of followed user ids) in context. Used by search results and explore's suggested users. #}
+<div class="connection-row">
+    <a href="{% url 'profile' username=candidate.username %}">
+        {% if candidate.profile.profile_picture %}
+            <img class="avatar avatar-sm" src="{{ candidate.profile.profile_picture.url }}" alt="{{ candidate.username }}">
+        {% else %}
+            <div class="avatar avatar-sm"></div>
+        {% endif %}
+    </a>
+    <div style="flex:1; min-width:0;">
+        <a class="connection-username" href="{% url 'profile' username=candidate.username %}">@{{ candidate.username }}</a>
+        {% if candidate.get_full_name %}
+            <div class="connection-meta">{{ candidate.get_full_name }}</div>
+        {% endif %}
+        {% if candidate.profile.bio %}
+            <div class="connection-meta">{{ candidate.profile.bio|truncatechars:60 }}</div>
+        {% endif %}
+    </div>
+
+    {% if candidate == request.user %}
+        <span class="helptext">You</span>
+    {% elif request.user.is_authenticated %}
+        {% if candidate.id in following_ids %}
+            <form method="post" action="{% url 'unfollow_user' username=candidate.username %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary btn-sm">Following</button>
+            </form>
+        {% else %}
+            <form method="post" action="{% url 'follow_user' username=candidate.username %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+            </form>
+        {% endif %}
+    {% endif %}
+</div>

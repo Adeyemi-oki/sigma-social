@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Sigma Social{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h1>Home</h1>
+
+        <p class="create-post-link">
+            <a class="btn btn-primary" href="{% url 'create_post' %}">&#10133; Create Post</a>
+        </p>
+
+        <div class="feed">
+            {% for post in page_obj %}
+                {% include "posts/_post_card.html" %}
+            {% empty %}
+                <div class="card empty-feed">
+                    No posts yet.<br>Be the first to share something!
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.paginator.num_pages > 1 %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">&larr; Previous</a>
+                {% endif %}
+                <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next &rarr;</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="auth-wrap" style="min-height:80vh;">
+            <div class="auth-card" style="max-width:440px; text-align:center;">
+                <span class="brand-mark" aria-hidden="true" style="display:inline-block; margin-bottom:12px; width:56px; height:56px; border-radius:16px;"></span>
+                <h1 style="font-size:2rem;">Sigma Social</h1>
+                <p class="auth-tagline" style="font-size:1rem; margin-bottom:24px;">Connect &bull; Share &bull; Grow</p>
+                <p style="color:var(--color-muted);">A small, private place to share what you're up to with people you actually know.</p>
+                <div style="display:flex; gap:12px; justify-content:center; margin-top:20px;">
+                    <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
+                    <a class="btn btn-secondary" href="{% url 'login' %}">Log in</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block right_rail %}
+    {% if user.is_authenticated %}
+    <aside class="right-rail">
+        <div class="rail-card">
+            <div class="rail-tagline">Connect &bull; Share &bull; Grow</div>
+        </div>
+        {% if rail_suggested_users %}
+            <div class="rail-card">
+                <h3 style="margin-bottom: var(--space-2);">Suggested for you</h3>
+                {% for candidate in rail_suggested_users %}
+                    <div class="connection-row" style="padding: var(--space-2) 0;">
+                        <a href="{% url 'profile' username=candidate.username %}">
+                            {% if candidate.profile.profile_picture %}
+                                <img class="avatar avatar-sm" src="{{ candidate.profile.profile_picture.url }}" alt="{{ candidate.username }}">
+                            {% else %}
+                                <div class="avatar avatar-sm"></div>
+                            {% endif %}
+                        </a>
+                        <a class="connection-username" href="{% url 'profile' username=candidate.username %}">@{{ candidate.username }}</a>
+                        <form method="post" action="{% url 'follow_user' username=candidate.username %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary btn-sm">Follow</button>
+                        </form>
+                    </div>
+                {% endfor %}
+                <a href="{% url 'explore' %}" class="links" style="display:block; margin-top: var(--space-2);">See more</a>
+            </div>
+        {% endif %}
+    </aside>
+    {% endif %}
+{% endblock %}

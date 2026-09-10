@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - Sigma Social{% endblock %}
+
+{% block content %}
+<div class="narrow-card">
+    <div class="card">
+        <h1>Edit profile</h1>
+
+        {% if form.instance.profile_picture %}
+            <div class="current-picture">
+                <img class="avatar avatar-lg" style="margin:0 auto;" src="{{ form.instance.profile_picture.url }}" alt="Current profile picture">
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <span class="helptext">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </p>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+        </form>
+
+        <p class="links">
+            <a href="{% url 'profile' username=request.user.username %}">Back to profile</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

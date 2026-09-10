@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Followers - Sigma Social{% endblock %}
+
+{% block content %}
+<div class="narrow-card">
+    <h1>Followers</h1>
+
+    <div class="card" style="padding: var(--space-2) var(--space-4);">
+        {% for follow in page_obj %}
+            <div class="connection-row">
+                <a href="{% url 'profile' username=follow.follower.username %}">
+                    {% if follow.follower.profile.profile_picture %}
+                        <img class="avatar avatar-sm" src="{{ follow.follower.profile.profile_picture.url }}" alt="{{ follow.follower.username }}">
+                    {% else %}
+                        <div class="avatar avatar-sm"></div>
+                    {% endif %}
+                </a>
+                <a class="connection-username" href="{% url 'profile' username=follow.follower.username %}">@{{ follow.follower.username }}</a>
+
+                {% if follow.follower_id in following_ids %}
+                    <form method="post" action="{% url 'unfollow_user' username=follow.follower.username %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-sm">Following</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'follow_user' username=follow.follower.username %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p class="empty-feed">No followers yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&larr; Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next &rarr;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

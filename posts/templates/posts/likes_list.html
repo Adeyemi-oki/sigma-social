@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Liked by - Sigma Social{% endblock %}
+
+{% block content %}
+<div class="narrow-card">
+    <div class="card">
+        <h1>Liked by</h1>
+
+        <ul class="liked-by-list">
+            {% for like in likers %}
+                <li>
+                    <a href="{% url 'profile' username=like.user.username %}" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--color-text); font-weight:700;">
+                        {% if like.user.profile.profile_picture %}
+                            <img class="avatar avatar-sm" src="{{ like.user.profile.profile_picture.url }}" alt="">
+                        {% else %}
+                            <div class="avatar avatar-sm"></div>
+                        {% endif %}
+                        @{{ like.user.username }}
+                    </a>
+                </li>
+            {% empty %}
+                <li class="empty-feed">No likes yet.</li>
+            {% endfor %}
+        </ul>
+
+        <p class="links">
+            <a href="{% url 'post_detail' pk=post.pk %}">&larr; Back to post</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
