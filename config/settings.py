@@ -216,42 +216,28 @@ USE_TZ = True
 
 
 # ---------------------------------------------------------------------------
-# Static files (CSS, JavaScript, images)
+# Static files
 # ---------------------------------------------------------------------------
 
 STATIC_URL = "static/"
 
-# Extra locations for static files that are not tied to a specific app
-# (e.g. project-wide CSS/JS/images). Only included if the directory exists,
-# so `collectstatic` doesn't warn on a fresh checkout before it's populated.
 _project_static_dir = BASE_DIR / "static"
 STATICFILES_DIRS = [_project_static_dir] if _project_static_dir.exists() else []
 
-# Where `collectstatic` gathers everything for production deployment.
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# WhiteNoise: serve static files directly from the Django app in production,
-# with compression and cache-busting hashed filenames.
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 
 # ---------------------------------------------------------------------------
-# Media files (user uploads)
+# Media files
 # ---------------------------------------------------------------------------
-# Local development (and any deployment without Cloudinary configured)
-# stores uploads on disk exactly as in earlier phases: MEDIA_ROOT is a
-# folder in the project, served by Django's dev server / static() helper.
-#
-# In production, Render's filesystem is ephemeral -- anything written to
-# disk disappears on the next deploy or restart. So when Cloudinary
-# credentials are present (USE_CLOUDINARY, set above), uploaded profile
-# pictures and post images are stored in Cloudinary instead, and MEDIA_URL
-# is swapped for Cloudinary's own delivery domain. No model changes were
-# needed for this -- ImageField already delegates to whichever storage
-# backend is configured here.
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+
+# ---------------------------------------------------------------------------
+# Storage backends
+# ---------------------------------------------------------------------------
 
 if USE_CLOUDINARY:
     CLOUDINARY_STORAGE = {
@@ -259,7 +245,24 @@ if USE_CLOUDINARY:
         "API_KEY": CLOUDINARY_API_KEY,
         "API_SECRET": CLOUDINARY_API_SECRET,
     }
-    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 
 # ---------------------------------------------------------------------------
